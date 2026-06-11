@@ -95,13 +95,13 @@
   </div>
 </template>
 
-<script setup lang="ts">
+<script setup>
 import { ref } from 'vue'
 
-const emit = defineEmits<{
-  (e: 'register-success', user: { username: string; email: string; role: string }): void
-  (e: 'switch-to-login'): void
-}>()
+const emit = defineEmits([
+  'register-success',
+  'switch-to-login'
+])
 
 const isLoading = ref(false)
 const showPassword = ref(false)

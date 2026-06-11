@@ -1,16 +1,16 @@
-<script setup lang="ts">
+<script setup>
 import { ref, watch } from 'vue'
 import QRCode from 'qrcode'
 
-const props = defineProps<{
-  visible: boolean
-  sessionCode: string
-  sessionUrl: string
-}>()
+const props = defineProps({
+  visible: Boolean,
+  sessionCode: String,
+  sessionUrl: String
+})
 
-const emit = defineEmits<{
-  (e: 'update:visible', value: boolean): void
-}>()
+const emit = defineEmits([
+  'update:visible'
+])
 
 const qrCodeUrl = ref('')
 const close = () => emit('update:visible', false)

@@ -1,22 +1,22 @@
-<script setup lang="ts">
-import { t } from '../i18n'
+<script setup>
+import { t } from '../i18n.js'
 import { ref } from 'vue'
-import { useSessionStore } from '../stores/sessionStore'  
+import { useSessionStore } from '../stores/sessionStore.js'  
 
 const store = useSessionStore()
 const sessionInput = ref('')
 const errorMessage = ref('')
-const emit = defineEmits<{ (e: 'navigate', view: string): void }>()
+const emit = defineEmits(['navigate'])
 
 const createSession = async () => {
-  console.log('createSession wurde aufgerufen')        // ← NEU
+  console.log('createSession wurde aufgerufen')
   try {
-    console.log('Rufe store.createSession auf...')      // ← NEU
+    console.log('Rufe store.createSession auf...')
     await store.createSession()
-    console.log('store.createSession erfolgreich')      // ← NEU
+    console.log('store.createSession erfolgreich')
     emit('navigate', 'session')
   } catch (err) {
-    console.error('Fehler in createSession:', err)      // ← NEU
+    console.error('Fehler in createSession:', err)
     errorMessage.value = 'Fehler beim Erstellen'
   }
 }
@@ -31,7 +31,7 @@ const joinSession = async () => {
     await store.joinSession(code)
     emit('navigate', 'session')
     errorMessage.value = ''
-  } catch (err: any) {
+  } catch (err) {
     errorMessage.value = err.message || 'Beitreten fehlgeschlagen'
   }
 }

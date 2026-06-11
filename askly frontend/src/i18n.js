@@ -1,26 +1,24 @@
 import { ref } from 'vue'
 
-const locale = ref<'de' | 'en'>(
-  (localStorage.getItem('askly_locale') as 'de' | 'en') || 'de'
-)
+const locale = ref((localStorage.getItem('askly_locale')) || 'de')
 
 const texts = {
   de: {
     feature1Title: 'Anonym Fragen stellen',
-feature1Text:
-  'Studierende können ohne Registrierung Fragen stellen und direkt teilnehmen.',
+    feature1Text:
+      'Studierende können ohne Registrierung Fragen stellen und direkt teilnehmen.',
 
-feature2Title: 'Fragen Hochvoten',
-feature2Text:
-  'Wichtige Fragen können hochgevotet werden, damit Dozierende Prioritäten erkennen.',
+    feature2Title: 'Fragen Hochvoten',
+    feature2Text:
+      'Wichtige Fragen können hochgevotet werden, damit Dozierende Prioritäten erkennen.',
 
-feature3Title: 'Live Sessions',
-feature3Text:
-  'Echtzeit-Fragen und Antworten für moderne Vorlesungen und Workshops.',
+    feature3Title: 'Live Sessions',
+    feature3Text:
+      'Echtzeit-Fragen und Antworten für moderne Vorlesungen und Workshops.',
 
-landingTitle: 'Einfach. Anonym. Interaktiv.',
-landingText:
-  'Askly hilft Dozierenden Fragen in Echtzeit zu sammeln und Studierende anonym einzubinden.',
+    landingTitle: 'Einfach. Anonym. Interaktiv.',
+    landingText:
+      'Askly hilft Dozierenden Fragen in Echtzeit zu sammeln und Studierende anonym einzubinden.',
     homeTitle: 'Anonyme Fragen für moderne Vorlesungen',
     homeSubtitle: 'Live, interaktiv, ohne Registrierung',
     forStudents: 'Für Studierende',
@@ -60,21 +58,21 @@ landingText:
       - Dunkelmodus und Sprachumschaltung verfügbar.`
   },
   en: {
-feature1Title: 'Ask anonymously',
-feature1Text:
-  'Students can ask questions without registration and participate instantly.',
+    feature1Title: 'Ask anonymously',
+    feature1Text:
+      'Students can ask questions without registration and participate instantly.',
 
-feature2Title: 'Vote questions',
-feature2Text:
-  'Upvote important questions so lecturers can focus on what matters most.',
+    feature2Title: 'Vote questions',
+    feature2Text:
+      'Upvote important questions so lecturers can focus on what matters most.',
 
-feature3Title: 'Live sessions',
-feature3Text:
-  'Real-time questions and answers for lectures, workshops, and interactive sessions.',
+    feature3Title: 'Live sessions',
+    feature3Text:
+      'Real-time questions and answers for lectures, workshops, and interactive sessions.',
 
-landingTitle: 'Simple. Anonymous. Interactive.',
-landingText:
-  'Askly helps lecturers collect questions in real time while keeping students engaged through anonymous participation and voting.',
+    landingTitle: 'Simple. Anonymous. Interactive.',
+    landingText:
+      'Askly helps lecturers collect questions in real time while keeping students engaged through anonymous participation and voting.',
     homeTitle: 'Anonymous questions for modern lectures',
     homeSubtitle: 'Live, interactive, no registration',
     forStudents: 'For students',
@@ -113,13 +111,13 @@ landingText:
       - Report issues (sent to Firebase).<br>
       - Dark mode and language switching available.`
   }
-} as const
-
-export const t = (key: string): string => {
-  return (texts[locale.value] as Record<string, string>)[key] || key
 }
 
-export const setLocale = (newLocale: 'de' | 'en') => {
+export const t = (key) => {
+  return (texts[locale.value])[key] || key
+}
+
+export const setLocale = (newLocale) => {
   locale.value = newLocale
   localStorage.setItem('askly_locale', newLocale)
 }

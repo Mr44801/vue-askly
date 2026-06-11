@@ -91,21 +91,12 @@
   </div>
 </template>
 
-<script setup lang="ts">
+<script setup>
 import { ref, onMounted } from 'vue'
-
-interface ImpressumData {
-  name: string
-  street: string
-  city: string
-  phone: string
-  email: string
-  website: string
-}
 
 const editMode = ref(false)
 
-const contactData = ref<ImpressumData>({
+const contactData = ref({
   name: '',
   street: '',
   city: '',
@@ -114,7 +105,7 @@ const contactData = ref<ImpressumData>({
   website: ''
 })
 
-const editData = ref<ImpressumData>({ ...contactData.value })
+const editData = ref({ ...contactData.value })
 
 const loadImpressum = () => {
   const saved = localStorage.getItem('askly-impressum')

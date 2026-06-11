@@ -1,9 +1,9 @@
-<script setup lang="ts">
+<script setup>
 import { ref, onMounted } from 'vue'
 import { push, set } from 'firebase/database'
 import { ref as dbRef } from 'firebase/database'
-import { db } from '../firebase'
-import { t, setLocale, useLocale } from '../i18n'
+import { db } from '../firebase.js'
+import { t, setLocale, useLocale } from '../i18n.js'
 import Impressum from './Impressum.vue'
 
 const locale = useLocale()
@@ -11,7 +11,7 @@ const locale = useLocale()
 const userName = ref(localStorage.getItem('askly_userName') || 'Gast')
 const editNameInput = ref(userName.value)
 const isEditingName = ref(false)
-const userQuestions = ref<{ text: string, time: string, sessionCode: string }[]>([])
+const userQuestions = ref([])
 const bugReportText = ref('')
 const bugReportSuccess = ref(false)
 const bugReportError = ref('')

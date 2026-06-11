@@ -1,16 +1,14 @@
 import { ref, computed } from 'vue'
 import { ref as dbRef, onValue, set, update, get } from 'firebase/database'
 import { db } from '../firebase'
-import type { Question, Session } from '../types'
 
 // ---------- Modulweite (geteilte) Zustände ----------
-const activeSessionCode = ref<string | null>(null)
-const userRole = ref<'host' | 'guest' | null>(null)
-const votedQuestionIds = ref<number[]>([])
-const currentSession = ref<Session | null>(null)   // ← jetzt GLOBAL
+const activeSessionCode = ref(null)
+const userRole = ref(null)
+const votedQuestionIds = ref([])
+const currentSession = ref(null)
 
 const bannedWords = [
-  
   'tester',
   'fucking',
   'shit',
@@ -27,6 +25,7 @@ const bannedWords = [
   'arschloch',
   'hund'
 ]
+
 // ---------- Abgeleiteter Zustand ----------
 const sortedQuestions = computed(() => {
   if (!currentSession.value) return []
@@ -34,7 +33,7 @@ const sortedQuestions = computed(() => {
 })
 
 // ---------- Hilfsfunktion ----------
-const generateCode = (): string => {
+const generateCode = () => {
   const digits = Math.floor(Math.random() * 900 + 100).toString()
   const letters = String.fromCharCode(65 + Math.floor(Math.random() * 26)) +
                   String.fromCharCode(65 + Math.floor(Math.random() * 26))
@@ -43,9 +42,9 @@ const generateCode = (): string => {
 
 // ---------- Der Store (gibt nur noch Funktionen zurück) ----------
 export const useSessionStore = () => {
-  let unsubscribe: (() => void) | null = null
+  let unsubscribe = null
 
-  const listenToSession = (code: string) => {
+  const listenToSession = (code) => {
     if (unsubscribe) unsubscribe()
     const sessionRef = dbRef(db, `sessions/${code}`)
     unsubscribe = onValue(sessionRef, (snapshot) => {
@@ -67,12 +66,12 @@ export const useSessionStore = () => {
 
   const createSession = async () => {
     const code = generateCode()
-    const newSession: Session = {
-  code,
-  questions: [],
-  isEnded: false,
-  participantsCount: 0
-}
+    const newSession = {
+      code,
+      questions: [],
+      isEnded: false,
+      participantsCount: 0
+    }
     try {
       await set(dbRef(db, `sessions/${code}`), newSession)
       activeSessionCode.value = code
@@ -85,7 +84,7 @@ export const useSessionStore = () => {
     }
   }
 
-  const joinSession = async (rawCode: string) => {
+  const joinSession = async (rawCode) => {
     const code = rawCode.trim().toUpperCase()
     if (!/^\d{3}[A-Z]{2}$/.test(code)) throw new Error('Invalid code format')
     const sessionRef = dbRef(db, `sessions/${code}`)
@@ -111,25 +110,25 @@ export const useSessionStore = () => {
     unsubscribe = null
   }
 
-  const addQuestion = async (text: string) => {
+  const addQuestion = async (text) => {
     if (userRole.value === 'host') throw new Error('Host cannot add question')
     if (!activeSessionCode.value) throw new Error('No active session')
-      const lowerText = text.toLowerCase()
+    const lowerText = text.toLowerCase()
 
     const containsBannedWord = bannedWords.some(word =>
-    new RegExp(`\\b${word}\\b`, 'i').test(text)
-)
+      new RegExp(`\\b${word}\\b`, 'i').test(text)
+    )
 
-  if (containsBannedWord) {
-  throw new Error('Inappropriate language is not allowed')
-}
+    if (containsBannedWord) {
+      throw new Error('Inappropriate language is not allowed')
+    }
     const sessionRef = dbRef(db, `sessions/${activeSessionCode.value}`)
     const snapshot = await get(sessionRef)
     const data = snapshot.val()
     if (!data) throw new Error('Session not found')
     let questions = data.questions || []
     if (!Array.isArray(questions)) questions = Object.values(questions)
-    const newQuestion: Question = {
+    const newQuestion = {
       id: Date.now(),
       text,
       votes: 0,
@@ -140,7 +139,7 @@ export const useSessionStore = () => {
     return newQuestion
   }
 
-  const voteQuestion = async (questionId: number) => {
+  const voteQuestion = async (questionId) => {
     if (userRole.value === 'host') throw new Error('Host cannot vote')
     if (votedQuestionIds.value.includes(questionId)) return
     if (!activeSessionCode.value) throw new Error('No active session')
@@ -150,21 +149,21 @@ export const useSessionStore = () => {
     if (!data) throw new Error('Session not found')
     let questions = data.questions || []
     if (!Array.isArray(questions)) questions = Object.values(questions)
-    const updatedQuestions = questions.map((q: Question) =>
+    const updatedQuestions = questions.map((q) =>
       q.id === questionId ? { ...q, votes: q.votes + 1 } : q
     )
     await update(sessionRef, { questions: updatedQuestions })
     votedQuestionIds.value.push(questionId)
   }
 
-  const getSessionUrl = (code: string) => `${window.location.origin}?code=${code}`
+  const getSessionUrl = (code) => `${window.location.origin}?code=${code}`
 
   return {
-    currentSession,      // ← globaler Ref
-    sortedQuestions,     // ← globaler computed
-    userRole,            // ← globaler Ref
-    votedQuestionIds,    // ← globaler Ref
-    activeSessionCode,   // ← globaler Ref
+    currentSession,
+    sortedQuestions,
+    userRole,
+    votedQuestionIds,
+    activeSessionCode,
     createSession,
     joinSession,
     endSession,

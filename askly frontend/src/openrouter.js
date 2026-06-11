@@ -1,9 +1,4 @@
-interface ModerationResult {
-  flagged: boolean
-  reason: string | null
-}
-
-export async function moderateQuestion(questionText: string): Promise<ModerationResult> {
+export async function moderateQuestion(questionText) {
   const apiKey = import.meta.env.VITE_OPENROUTER_API_KEY
   if (!apiKey) {
     console.warn('Kein OpenRouter API-Key gefunden. Moderation übersprungen.')

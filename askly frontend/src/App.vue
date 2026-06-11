@@ -1,14 +1,14 @@
-<script setup lang="ts">
+<script setup>
 import { ref, onMounted } from 'vue'
-import { useSessionStore } from './stores/sessionStore'
+import { useSessionStore } from './stores/sessionStore.js'
 import HomeView from './components/HomeView.vue'
 import LoginView from './components/LoginView.vue'
 import ProfileView from './components/ProfileView.vue'
 import Impressum from './components/Impressum.vue'
 import CookieConsent from './components/CookieConsent.vue'
 import QrCodeModal from './components/QrCodeModal.vue'
-import { setLocale, useLocale } from './i18n'
-import { moderateQuestion } from './openrouter'
+import { setLocale, useLocale } from './i18n.js'
+import { moderateQuestion } from './openrouter.js'
 
 const store = useSessionStore()
 const currentView = ref('home')
@@ -24,7 +24,7 @@ const cookiesAccepted = ref(false)
 
 // Login State - Standardmäßig als Gast eingeloggt
 const isLoggedIn = ref(true)
-const currentUser = ref<{ username: string; email: string; role: string; isGuest: boolean } | null>(null)
+const currentUser = ref(null)
 
 // View State für Login/Register Modal
 const showLoginModal = ref(false)
@@ -45,7 +45,7 @@ const checkSystemTheme = () => {
 
 const setupThemeListener = () => {
   const mediaQuery = window.matchMedia('(prefers-color-scheme: dark)')
-  const handler = (e: MediaQueryListEvent) => {
+  const handler = (e) => {
     if (e.matches) {
       document.documentElement.classList.add('dark')
       isDarkMode.value = true
@@ -58,7 +58,7 @@ const setupThemeListener = () => {
 }
 
 // Login Handler
-const handleLoginSuccess = (user: any) => {
+const handleLoginSuccess = (user) => {
   currentUser.value = user
   showLoginModal.value = false
 }
@@ -98,9 +98,6 @@ onMounted(() => {
 })
 
 
-
-
-
 const addQuestion = async () => {
   console.log('API Key vorhanden:', !!import.meta.env.VITE_OPENROUTER_API_KEY)
   if (!newQuestionText.value.trim()) return
@@ -123,15 +120,15 @@ const addQuestion = async () => {
     localStorage.setItem('askly_userQuestions', JSON.stringify(userQuestions))
     newQuestionText.value = ''
     errorMessage.value = ''
-  } catch (err: any) {
+  } catch (err) {
     errorMessage.value = err.message
   }
 }
 
-const voteQuestion = async (questionId: number) => {
+const voteQuestion = async (questionId) => {
   try {
     await store.voteQuestion(questionId)
-  } catch (err: any) {
+  } catch (err) {
     errorMessage.value = err.message
   }
 }

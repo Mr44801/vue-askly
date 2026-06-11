@@ -88,15 +88,15 @@
   </div>
 </template>
 
-<script setup lang="ts">
+<script setup>
 import { ref } from 'vue'
 
-const emit = defineEmits<{
-  (e: 'login-success', user: { username: string; email: string; role: string; isGuest: boolean }): void
-  (e: 'close'): void
-}>()
+const emit = defineEmits([
+  'login-success',
+  'close'
+])
 
-const activeTab = ref<'login' | 'register'>('login')
+const activeTab = ref('login')
 const isLoading = ref(false)
 const errorMessage = ref('')
 
